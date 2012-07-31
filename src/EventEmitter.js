@@ -325,7 +325,7 @@
 
   //The current EventEmitter prototype
   var EE_PROTO;
-  if(extend in EventEmitter)
+  if("extend" in EventEmitter)
   	EE_PROTO = EventEmitter.extend();
   else
   	EE_PROTO = _extend({}, EventEmitter.prototype);
@@ -364,7 +364,7 @@
     if(_isArray(object)) {
       for (var i = object.length - 1; i >= 0; i--) {
         _setProto(object[i], _prototype);
-      };
+      }
     } else {
       _setProto(object, _prototype);
     }
