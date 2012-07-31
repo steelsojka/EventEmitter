@@ -309,7 +309,7 @@
 }(this));
 
 /**
- * EventRegistry.js v1.0.0
+ * EventRegistry.js v1.0.1
  * @author Steven Sojka
  *
  * This module extends EventEmitter.js to allow event binding to
@@ -324,7 +324,11 @@
   'use strict'
 
   //The current EventEmitter prototype
-  var EE_PROTO = EventEmitter.extend();
+  var EE_PROTO;
+  if(extend in EventEmitter)
+  	EE_PROTO = EventEmitter.extend();
+  else
+  	EE_PROTO = _extend({}, EventEmitter.prototype);
 
   /**
    * Registers an object or object instance to a specific event emitter.
