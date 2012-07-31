@@ -10,10 +10,10 @@
 	// JSHint config
 	/*jshint smarttabs:true,devel:true*/
 	/*global define:true*/
-	
+
 	// Place the script into strict mode
 	'use strict';
-	
+
 	/**
 	 * EventEmitter class
 	 * Creates an object with event registering and firing methods
@@ -23,7 +23,7 @@
 		this._events = {};
 		this._maxListeners = 10;
 	}
-	
+
 	/**
 	 * Event class
 	 * Contains Event methods and property storage
@@ -42,7 +42,7 @@
 		this.once = once;
 		this.instance = instance;
 	}
-	
+
 	/**
 	 * Executes the listener
 	 *
@@ -51,14 +51,14 @@
 	 */
 	Event.prototype.fire = function(args) {
 		this.listener.apply(this.scope || this.instance, args);
-		
+
 		// Remove the listener if this is a once only listener
 		if(this.once) {
 			this.instance.removeListener(this.type, this.listener, this.scope);
 			return false;
 		}
 	};
-	
+
 	/**
 	 * Passes every listener for a specified event to a function one at a time
 	 *
@@ -71,14 +71,14 @@
 		var i = null,
 			possibleListeners = null,
 			result = null;
-		
+
 		// Only loop if the type exists
 		if(this._events.hasOwnProperty(type)) {
 			possibleListeners = this._events[type];
-			
+
 			for(i = 0; i < possibleListeners.length; i += 1) {
 				result = callback.call(this, possibleListeners[i], i);
-				
+
 				if(result === false) {
 					i -= 1;
 				}
@@ -87,11 +87,11 @@
 				}
 			}
 		}
-		
+
 		// Return the instance to allow chaining
 		return this;
 	};
-	
+
 	/**
 	 * Adds an event listener for the specified event
 	 *
@@ -106,13 +106,13 @@
 		if(!this._events.hasOwnProperty(type)) {
 			this._events[type] = [];
 		}
-		
+
 		// Push the new event to the array
 		this._events[type].push(new Event(type, listener, scope, once, this));
-		
+
 		// Emit the new listener event
 		this.emit('newListener', type, listener, scope, once);
-		
+
 		// Check if we have exceeded the maxListener count
 		// Ignore this check if the count is 0
 		// Also don't check if we have already fired a warning
@@ -122,15 +122,15 @@
 			if(typeof console !== 'undefined') {
 				console.warn('Possible EventEmitter memory leak detected. ' + this._events[type].length + ' listeners added. Use emitter.setMaxListeners() to increase limit.');
 			}
-			
+
 			// Set the flag so it doesn't fire again
 			this._events[type].warned = true;
 		}
-		
+
 		// Return the instance to allow chaining
 		return this;
 	};
-	
+
 	/**
 	 * Alias of the addListener method
 	 *
@@ -140,7 +140,7 @@
 	 * @param {Boolean} once If true then the listener will be removed after the first call
 	 */
 	EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-	
+
 	/**
 	 * Alias of the addListener method but will remove the event after the first use
 	 *
@@ -152,7 +152,7 @@
 	EventEmitter.prototype.once = function(type, listener, scope) {
 		return this.addListener(type, listener, scope, true);
 	};
-	
+
 	/**
 	 * Removes the a listener for the specified event
 	 *
@@ -169,16 +169,16 @@
 				this._events[type].splice(index, 1);
 			}
 		});
-		
+
 		// Remove the property if there are no more listeners
 		if(this._events[type] && this._events[type].length === 0) {
 			delete this._events[type];
 		}
-		
+
 		// Return the instance to allow chaining
 		return this;
 	};
-	
+
 	/**
 	 * Alias of the removeListener method
 	 *
@@ -188,7 +188,7 @@
 	 * @return {Object} The current EventEmitter instance to allow chaining
 	 */
 	EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
-	
+
 	/**
 	 * Removes all listeners for a specified event
 	 * If no event type is passed it will remove every listener
@@ -205,11 +205,11 @@
 		else if(!type) {
 			this._events = {};
 		}
-		
+
 		// Return the instance to allow chaining
 		return this;
 	};
-	
+
 	/**
 	 * Retrieves the array of listeners for a specified event
 	 *
@@ -221,17 +221,17 @@
 		if(this._events.hasOwnProperty(type)) {
 			// It does exist, loop over building the array
 			var listeners = [];
-			
+
 			this.eachListener(type, function(evt) {
 				listeners.push(evt.listener);
 			});
-			
+
 			return listeners;
 		}
-		
+
 		return [];
 	};
-	
+
 	/**
 	 * Emits an event executing all appropriate listeners
 	 * All values passed after the type will be passed as arguments to the listeners
@@ -243,19 +243,19 @@
 		// Calculate the arguments
 		var args = [],
 			i = null;
-		
+
 		for(i = 1; i < arguments.length; i += 1) {
 			args.push(arguments[i]);
 		}
-		
+
 		this.eachListener(type, function(currentListener) {
 			return currentListener.fire(args);
 		});
-		
+
 		// Return the instance to allow chaining
 		return this;
 	};
-	
+
 	/**
 	 * Sets the max listener count for the EventEmitter
 	 * When the count of listeners for an event exceeds this limit a warning will be printed
@@ -266,11 +266,11 @@
 	 */
 	EventEmitter.prototype.setMaxListeners = function(maxListeners) {
 		this._maxListeners = maxListeners;
-		
+
 		// Return the instance to allow chaining
 		return this;
 	};
-	
+
 	/**
 	 * Builds a clone of the prototype object for you to extend with
 	 *
@@ -283,7 +283,7 @@
 		var clone = {},
 			current = this.prototype,
 			key = null;
-		
+
 		for(key in current) {
 			// Make sure this is actually a property of the object before copying it
 			// We don't want any default object methods leaking though
@@ -291,11 +291,11 @@
 				clone[key] = current[key];
 			}
 		}
-		
+
 		// All done, return the clone
 		return clone;
 	};
-	
+
 	// Export the class
 	// If AMD is available then use it
 	if(typeof define === 'function' && define.amd) {
@@ -303,7 +303,99 @@
 			return EventEmitter;
 		});
 	}
-	
+
 	// No matter what it will be added to the global object
 	exports.EventEmitter = EventEmitter;
 }(this));
+
+/**
+ * EventRegistry.js v1.0.0
+ * @author Steven Sojka
+ *
+ * This module extends EventEmitter.js to allow event binding to
+ * classes or objects and register them to a specific event emitter.
+ *
+ * https://github.com/steelsojka/EventRegistry
+ *
+ * - Licensed under the MIT license
+**/
+(function(exports, EventEmitter) {
+
+  'use strict'
+
+  //The current EventEmitter prototype
+  var EE_PROTO = EventEmitter.extend();
+
+  /**
+   * Registers an object or object instance to a specific event emitter.
+   *
+   * @param  {Function|Object|Array} object Object, Function class, or Array of objects
+   *                                        that will be tied to an event emitter.
+   * @return {Null}
+   */
+  EE_PROTO.register = function(object) {
+    var self = this;
+    var _prototype = {
+      on : function(event, listener, scope, once) {
+        var _scope = scope || this;
+        self.on.call(self, event, listener, _scope, once);
+      },
+      emit : function() {
+        self.emit.apply(self, arguments);
+      },
+      once : function(event, listener, scope) {
+        var _scope = scope || this;
+        self.once.call(self, event, listener, scope);
+      },
+      off : function(event, listener, scope) {
+        var _scope = scope || this;
+        self.off.call(self, event, listener, _scope);
+      }
+    };
+
+    //Aliases for on and off
+    _prototype.addListener    = _prototype.on;
+    _prototype.removeListener = _prototype.off;
+
+    if(_isArray(object)) {
+      for (var i = object.length - 1; i >= 0; i--) {
+        _setProto(object[i], _prototype);
+      };
+    } else {
+      _setProto(object, _prototype);
+    }
+
+    return this;
+  };
+
+  // Set new EventEmitter prototype
+  EventEmitter.prototype = EE_PROTO;
+
+  // Check to see if object is an array
+  var _isArray = function(a) {
+    return Object.prototype.toString.apply(a) === '[object Array]';
+  };
+
+  // Sets either the prototype if object is a function or
+  // adds to an object if an instance.
+  var _setProto = function(object, _prototype) {
+    if(typeof object === "function")
+      object.prototype = _extend(object.prototype, _prototype);
+    else if(typeof object === "object")
+      object = _extend(object, _prototype);
+  };
+
+  //Internal extend object function
+  var _extend = function(obj1, obj2) {
+    var key;
+    for(key in obj2) {
+      if(obj2.hasOwnProperty(key)) {
+        obj1[key] = obj2[key];
+      }
+    }
+    return obj1;
+  };
+
+  exports.EventEmitter = EventEmitter;
+
+}(this, EventEmitter));  //Pass in global EventEmitter object
