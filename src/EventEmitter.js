@@ -309,7 +309,7 @@
 }(this));
 
 /**
- * EventRegistry.js v1.0.1
+ * EventRegistry.js v1.1.0
  * @author Steven Sojka
  *
  * This module extends EventEmitter.js to allow event binding to
@@ -329,6 +329,28 @@
   	EE_PROTO = EventEmitter.extend();
   else
   	EE_PROTO = _extend({}, EventEmitter.prototype);
+
+  //Copy old addListener
+  var _addListener    = EE_PROTO.addListener;
+  var _removeListener = EE_PROTO.removeListener;
+
+  //Allows you to handle multiple events seperated by a space
+  EE_PROTO.addListener = function(type, listener, scope, once) {
+    var eventArray = type.split(" ");
+    for (var i = eventArray.length - 1; i >= 0; i--) {
+      _addListener.call(this, eventArray[i], listener, scope, once);
+    }
+  };
+
+  EE_PROTO.removeListener = function(type, listener, scope) {
+    var eventArray = type.split(" ");
+    for (var i = eventArray.length - 1; i >= 0; i--) {
+      _removeListener.call(this, eventArray[i], listener, scope);
+    }
+  };
+
+  EE_PROTO.on  = EE_PROTO.addListener;
+  EE_PROTO.off = EE_PROTO.removeListener;
 
   /**
    * Registers an object or object instance to a specific event emitter.
