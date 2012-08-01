@@ -422,6 +422,12 @@
     return obj1;
   };
 
+  if(typeof define === 'function' && define.amd) {
+    define(function() {
+      return EventEmitter;
+    });
+  }
+
   exports.EventEmitter = EventEmitter;
 
 }(this, EventEmitter));  //Pass in global EventEmitter object
