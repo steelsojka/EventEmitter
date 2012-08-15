@@ -365,17 +365,21 @@
       on : function(event, listener, scope, once) {
         var _scope = scope || this;
         self.on.call(self, event, listener, _scope, once);
+        return _scope;
       },
       emit : function() {
         self.emit.apply(self, arguments);
+        return this;
       },
       once : function(event, listener, scope) {
         var _scope = scope || this;
         self.once.call(self, event, listener, scope);
+        return _scope;
       },
       off : function(event, listener, scope) {
         var _scope = scope || this;
         self.off.call(self, event, listener, _scope);
+        return _scope;
       }
     };
 
